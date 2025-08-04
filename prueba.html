@@ -1,0 +1,76 @@
+<nav class="navbar">
+  <button id="menu-btn">Menú</button>
+  <ul class="dropdown-menu">
+    <li><a href="#uno">Uno</a></li>
+    <li><a href="#dos">Dos</a></li>
+    <li><a href="#tres">Tres</a></li>
+  </ul>
+</nav>
+
+<script>
+  const btn = document.getElementById('menu-btn');
+  const menu = document.querySelector('.dropdown-menu');
+  document.addEventListener('DOMContentLoaded', () => {
+    let isScroll = false;
+    menu.addEventListener('touchstart', () => isScroll = false);
+    menu.addEventListener('touchmove', () => isScroll = true);
+    menu.addEventListener('touchend', ev => {
+      if (isScroll) {
+        ev.preventDefault();
+        isScroll = false;
+      }
+    }, { passive: false });
+    // click solo si no hubo scroll
+    menu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', ev => {
+        if (isScroll) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          isScroll = false;
+        }
+      });
+    });
+  });
+
+  let abierto = false;
+  btn.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch') e.preventDefault();
+  });
+  btn.addEventListener('click', () => {
+    abierto = !abierto;
+    document.body.classList.toggle('nav-open', abierto);
+  });
+</script>
+
+<style>
+  body.nav-open .dropdown-menu {
+    display: block;
+  }
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    background: #333;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  .dropdown-menu li a {
+    color: #fff;
+    padding: 12px 16px;
+    display: block;
+    text-decoration: none;
+  }
+
+  /* Solo móvil */
+  @media (max-width: 768px) {
+    .dropdown-menu {
+      overflow-y: auto !important;
+      max-height: calc(100vh - 60px);
+      -webkit-overflow-scrolling: touch;
+    }
+    #menu-btn {
+      /* opcional: estilos para botón tipo hamburguesa */
+    }
+  }
+</style>
